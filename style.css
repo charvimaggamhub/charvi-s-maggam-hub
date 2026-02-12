@@ -32,13 +32,36 @@ body{
   border-radius:50%;
 }
 
-/* Center brand */
-.brand-name{
-  text-align:center;
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:1px;
+
+/* ================= BRAND TEXT LOGO ================= */
+
+.brand-text{
+  display:flex;
+  flex-direction:column;     /* 🔥 stack vertically */
+  align-items:center;        /* center align */
+  line-height:1.1;
 }
+
+/* Charvi’s – top text */
+.brand-normal{
+  font-family: 'DM Serif Display', serif;
+  font-size:26px;
+  font-weight:600;
+  color:#2b2b2b;
+}
+
+/* Maggam Hub – bottom cursive */
+.brand-cursive{
+  font-family: "Brush Script MT", "Lucida Handwriting", cursive;
+  font-size:26px;
+  font-weight:700;
+  color:#b76e79;
+  letter-spacing:0.5px;
+  margin-top:2px;
+  text-shadow:1px 2px 6px rgba(183,110,121,0.35);
+}
+
+
 
 /* Toggle icon */
 .menu-toggle{
@@ -178,39 +201,27 @@ button{
 /* ================= FOOTER ================= */
 /* ================= FOOTER WITH ICON LINKS ================= */
 
-.footer{
-  background:linear-gradient(180deg,#1b2230,#0f1624);
-  color:#cfd6e3;
-  text-align:center;
-  padding:28px 16px;
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-.footer-links-inline{
-  font-size:15px;
-  font-weight:500;
-  margin-bottom:14px;
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.footer-links-inline a{
-  color:#cfd6e3;
-  text-decoration:none;
-  padding:0 6px;
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
+.main-content {
+  flex: 1;
 }
 
-.footer-links-inline span{
-  color:#6b7280;
-}
-
-.footer-links-inline a:hover{
-  color:#ff6f91;
-}
-
-.footer-copy{
-  font-size:13px;
-  color:#9aa4b2;
+.footer {
+  background: #f7e7ea;
+  color: #5a1a24;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
 }
 
 
@@ -460,4 +471,25 @@ button{
   padding:6px 10px;
   border-radius:10px;
   font-size:14px;
+}
+
+
+/* ================= EMBROIDERY PATTERN BACKGROUND ================= */
+
+.embroidery-bg{
+  background-color:#fffafc;
+
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(183,110,121,0.15) 1px, transparent 0),
+    radial-gradient(circle at 6px 6px, rgba(183,110,121,0.08) 1px, transparent 0);
+
+  background-size:12px 12px;
+}
+
+.success-box {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f7e7ea;
+  border-radius: 10px;
+  color: #5a1a24;
 }
