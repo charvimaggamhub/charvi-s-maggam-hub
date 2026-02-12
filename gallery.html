@@ -1,59 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gallery - Charvi's Maggam Hub</title>
-<link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8">
+  <title>Gallery | Charvi's Maggam Hub</title>
+  <link rel="icon" type="image/png" href="favicon.png">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#b76e79">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #fff;
+    }
+
+    header {
+      background: #b76e79;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 20px 0;
+      color: #5a1a24;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 30px;
+      color: #777;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #f7e7ea;
+      color: #5a1a24;
+      margin-top: 30px;
+    }
+  </style>
 </head>
 
 <body>
-
-<header class="navbar">
+  <header class="navbar">
 <img src="logo.png" class="nav-logo">
 <nav>
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="services.html">Services</a>
-<a href="gallery.html" class="active">Gallery</a>
-<a href="contact.html">Contact</a>
-<a href="admin.html">Admin</a>
-</nav>
+  </nav>
 </header>
-<section class="sec">
-<h2>Our Work</h2>
 
-<section class="gallery" id="gallery"></section>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<header>
+  <h1>Charvi's Maggam Hub</h1>
+</header>
+
+<h2>Our Work Gallery</h2>
+
+<p class="loading" id="loadingMsg">Loading images...</p>
+
+<div class="gallery" id="gallery"></div>
+
+<footer>
+  © 2025 Charvi's Maggam Hub
+</footer>
 
 <script>
-firebase.initializeApp({
-  apiKey: "AIzaSyCBpSgYDgrzQ-Jq-Y8SfxRbIYiyNeY0F3I",
-  authDomain: "charvis-maggam-hub-52cb4.firebaseapp.com",
-  projectId: "charvis-maggam-hub-52cb4"
-});
+  const BACKEND_URL = "https://charvis-backend.onrender.com"; 
+  // 🔁 After deployment, change to:
+  // https://YOUR-BACKEND.onrender.com
 
-const db = firebase.firestore();
+  fetch(`${BACKEND_URL}/gallery`)
+    .then(res => res.json())
+    .then(images => {
+      const gallery = document.getElementById("gallery");
+      const loading = document.getElementById("loadingMsg");
 
-db.collection("gallery").orderBy("date","desc").onSnapshot(snapshot=>{
-  let html="";
-  snapshot.forEach(doc=>{
-    const g = doc.data();
-    html += `<img src="${g.image}" alt="${g.title}">`;
-  });
-  document.getElementById("gallery").innerHTML = html;
-});
+      loading.style.display = "none";
+
+      if (images.length === 0) {
+        loading.innerText = "No images uploaded yet.";
+        loading.style.display = "block";
+        return;
+      }
+
+      images.forEach(img => {
+        const image = document.createElement("img");
+        image.src = img.url;
+        image.alt = "Maggam work";
+        gallery.appendChild(image);
+      });
+    })
+    .catch(() => {
+      document.getElementById("loadingMsg").innerText =
+        "Failed to load images. Try again later.";
+    });
 </script>
 
-
-</section>
-
-<footer>© 2026 Charvi's Maggam Hub</footer>
 </body>
 </html>
