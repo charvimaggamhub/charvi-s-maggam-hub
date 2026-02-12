@@ -133,6 +133,10 @@ function loadAdminGallery() {
 
 // ================= DELETE IMAGE =================
 function deleteImage(publicId) {
+  if (!confirm("Are you sure you want to delete this image?")) {
+    return;
+  }
+
   fetch(`${BACKEND_URL}/admin/delete-image`, {
     method: "DELETE",
     headers: {
@@ -144,9 +148,17 @@ function deleteImage(publicId) {
     })
   })
   .then(res => res.json())
-  .then(() => {
-    alert("Image deleted");
-    loadAdminGallery();
+  .then(data => {
+    if (data.success) {
+      alert("Image deleted successfully");
+      loadAdminGallery();   // refresh gallery
+    } else {
+      alert("Delete failed");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Server error while deleting");
   });
 }
 
