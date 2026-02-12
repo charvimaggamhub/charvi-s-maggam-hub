@@ -493,3 +493,11 @@ html, body {
   border-radius: 10px;
   color: #5a1a24;
 }
+
+/* ================= APP VERSION ================= */
+
+.app-version{
+  font-size:12px;
+  color:#aaa;
+  margin-top:4px;
+}
