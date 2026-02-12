@@ -34,7 +34,17 @@
     <h2>Book Your Design</h2>
     <p class="sub-text">We create elegance with every stitch ✨</p>
 
+    <!-- ✅ ONLY ONE SUBMIT POINT -->
     <form id="bookingForm" onsubmit="submitBooking(); return false;">
+      <p id="loadingMsg" style="display:none;color:#b76e79;">
+  Booking in progress...
+</p>
+
+<div id="successBox" style="display:none;" class="success-box">
+  <h3>🎉 Booking Successful!</h3>
+  <p id="successText"></p>
+</div>
+
 
       <div class="input-group">
         <label>Your Name</label>
@@ -58,8 +68,11 @@
         </select>
       </div>
 
-      <button type="submit">✨ Book Now</button>
-      <p id="status"></p>
+
+      <!-- ✅ SUBMIT BUTTON -->
+      <button type="submit">
+        Book Now
+      </button>
 
     </form>
   </div>
@@ -70,157 +83,8 @@
   © 2025 Charvi's Maggam Hub | All Rights Reserved
 </footer>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script>
-/* Firebase Config */
-const firebaseConfig = {
-  apiKey: "AIzaSyCBpSgYDgrzQ-Jq-Y8SfxRbIYiyNeY0F3I",
-  authDomain: "charvis-maggam-hub-52cb4.firebaseapp.com",
-  projectId: "charvis-maggam-hub-52cb4"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-/* Submit Booking */
-function submitBooking(){
-
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const service = document.getElementById("service").value;
-
-  if(!name || !phone || !service){
-    alert("Please fill all details");
-    return;
-  }
-
-  /* Generate Booking ID */
-  const bookingId = "CMH-" + Date.now();
-
-  /* Save booking in Firestore */
-  db.collection("bookings").add({
-    bookingId,
-    name,
-    phone,
-    service,
-    status: "Pending",
-    date: new Date().toLocaleString()
-  }).then(()=>{
-
-    /* ================= ADMIN MESSAGE ================= */
-    const adminMessage =
-`Hello Charvi's Maggam Hub,
-
-📥 New booking received
-
-🆔 Booking ID: ${bookingId}
-👤 Name: ${name}
-📞 Phone: ${phone}
-🧵 Service: ${service}
-
-Thanks & Regards
-Charvi's Maggam Hub`;
-
-    const adminNumber = "916372364419";
-    const adminURL =
-      `https://wa.me/${adminNumber}?text=${encodeURIComponent(adminMessage)}`;
-
-    /* ================= CUSTOMER MESSAGE ================= */
-
-    let customerMessage = "";
-
-    if(service.toLowerCase().includes("bridal")){
-      customerMessage =
-`Hello ${name} 👋,
-
-💍 Thank you for choosing
-Charvi's Maggam Hub for your Maggam Work ✨
-
-🆔 Booking ID: ${bookingId}
-🧵 Service: ${service}
-
-Our designer will personally contact you
-to discuss your bridal requirements.
-
-Thanks & Regards
-Charvi's Maggam Hub`;
-    } else {
-      customerMessage =
-`Hello ${name} 👋,
-
-Thank you for booking with
-Charvi's Maggam Hub 🌸
-
-🆔 Booking ID: ${bookingId}
-🧵 Service: ${service}
-
-Our team will contact you shortly.
-
-Thanks & Regards
-Charvi's Maggam Hub`;
-    }
-
-    const customerURL =
-      `https://wa.me/?text=${encodeURIComponent(customerMessage)}`;
-
-    /* Open WhatsApp */
-    window.open(adminURL, "_blank");
-
-    setTimeout(()=>{
-      window.open(customerURL, "_blank");
-    }, 1200);
-
-    document.getElementById("status").innerText =
-      "🌸 Booking submitted! WhatsApp opened for confirmation.";
-
-    document.getElementById("bookingForm").reset();
-
-  }).catch(err=>{
-    console.error(err);
-    alert("Something went wrong. Please try again.");
-  });
-
-
-  /* Save booking in Firestore */
-  db.collection("bookings").add({
-    name,
-    phone,
-    service,
-    status: "Pending",
-    date: new Date().toLocaleString()
-  }).then(()=>{
-
-    /* WhatsApp Message */
-    const message =
-`Hello Charvi's Maggam Hub,
-
-My booking details:
-Name: ${name}
-Phone: ${phone}
-Service: ${service}
-
-Thanks & Regards
-Charvi's Maggam Hub`;
-
-    const whatsappNumber = "6372364419"; // Your WhatsApp number
-    const whatsappURL =
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-    window.open(whatsappURL, "_blank");
-
-    document.getElementById("status").innerText =
-      "🌸 Booking submitted! WhatsApp opened for confirmation.";
-
-    document.getElementById("bookingForm").reset();
-  }).catch(err=>{
-    console.error(err);
-    alert("Something went wrong. Please try again.");
-  });
-}
-</script>
+<!-- ✅ JS FILE LINKED AT BOTTOM -->
+<script src="js/booking.js"></script>
 
 </body>
 </html>
