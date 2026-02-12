@@ -35,24 +35,36 @@
 
 <script>
 const BACKEND_URL = "https://charvis-backend.onrender.com";
+
+let ADMIN_PASSWORD = sessionStorage.getItem("adminPass");
+
+if (!ADMIN_PASSWORD) {
+  window.location.href = "admin-login.html";
+}
+
 let allBookings = [];
 
-// LOAD BOOKINGS
+// ================= LOAD BOOKINGS =================
 function loadBookings() {
   fetch(`${BACKEND_URL}/admin/bookings`, {
     headers: {
-      "Authorization": localStorage.getItem("adminToken")
+      "Authorization": ADMIN_PASSWORD
     }
   })
-    .then(res => res.json())
-    .then(data => {
-      allBookings = data;
-      renderTable(data);
-    })
-    .catch(err => console.error(err));
+  .then(res => {
+    if (res.status === 403) {
+      alert("Session expired. Login again.");
+      window.location.href = "admin-login.html";
+    }
+    return res.json();
+  })
+  .then(data => {
+    allBookings = data;
+    renderTable(data);
+  });
 }
 
-// RENDER TABLE
+// ================= RENDER TABLE =================
 function renderTable(data) {
   const tbody = document.querySelector("#bookingTable tbody");
   tbody.innerHTML = "";
@@ -66,9 +78,9 @@ function renderTable(data) {
         <td>${b.service}</td>
         <td>
           <select id="status-${b.booking_id}">
-            <option ${b.status === "Pending" ? "selected" : ""}>Pending</option>
-            <option ${b.status === "In Progress" ? "selected" : ""}>In Progress</option>
-            <option ${b.status === "Completed" ? "selected" : ""}>Completed</option>
+            <option ${b.status==="Pending"?"selected":""}>Pending</option>
+            <option ${b.status==="In Progress"?"selected":""}>In Progress</option>
+            <option ${b.status==="Completed"?"selected":""}>Completed</option>
           </select>
         </td>
         <td>
@@ -79,7 +91,7 @@ function renderTable(data) {
   });
 }
 
-// UPDATE STATUS
+// ================= UPDATE STATUS =================
 function updateStatus(bookingId) {
   const status = document.getElementById(`status-${bookingId}`).value;
 
@@ -87,7 +99,7 @@ function updateStatus(bookingId) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": localStorage.getItem("adminToken")
+      "Authorization": ADMIN_PASSWORD
     },
     body: JSON.stringify({
       booking_id: bookingId,
@@ -95,60 +107,39 @@ function updateStatus(bookingId) {
     })
   })
   .then(res => res.json())
-  .then(() => alert("Status updated"))
-  .catch(err => console.error(err));
+  .then(() => alert("Status updated"));
 }
 
-// SEARCH
-function searchBookings() {
-  const value = document.getElementById("searchInput").value.toLowerCase();
-
-  const filtered = allBookings.filter(b =>
-    b.booking_id.toLowerCase().includes(value) ||
-    b.phone.includes(value)
-  );
-
-  renderTable(filtered);
-}
-
-loadBookings();
-</script>
-
-<hr>
-
-<h3>Gallery Images</h3>
-<div id="adminGallery"></div>
-
-<script>
+// ================= LOAD GALLERY =================
 function loadAdminGallery() {
   fetch(`${BACKEND_URL}/gallery`)
-    .then(res => res.json())
-    .then(images => {
-      const g = document.getElementById("adminGallery");
-      g.innerHTML = "";
+  .then(res => res.json())
+  .then(images => {
+    const g = document.getElementById("adminGallery");
+    g.innerHTML = "";
 
-      images.forEach(img => {
-        g.innerHTML += `
-          <div style="display:inline-block;margin:10px;">
-            <img src="${img.url}" width="120"><br>
-            <button onclick="deleteImage('${img.url}','${img.public_id}')">
-              Delete
-            </button>
-          </div>
-        `;
-      });
+    images.forEach(img => {
+      g.innerHTML += `
+        <div style="display:inline-block;margin:10px;">
+          <img src="${img.url}" width="120"><br>
+          <button onclick="deleteImage('${img.public_id}')">
+            Delete
+          </button>
+        </div>
+      `;
     });
+  });
 }
 
-function deleteImage(url, publicId) {
+// ================= DELETE IMAGE =================
+function deleteImage(publicId) {
   fetch(`${BACKEND_URL}/admin/delete-image`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": localStorage.getItem("adminToken")
+      "Authorization": ADMIN_PASSWORD
     },
     body: JSON.stringify({
-      url: url,
       public_id: publicId
     })
   })
@@ -159,16 +150,12 @@ function deleteImage(url, publicId) {
   });
 }
 
-loadAdminGallery();
-</script>
-
-<script>
+// ================= UPLOAD IMAGE =================
 function uploadImage() {
   const fileInput = document.getElementById("imageFile");
-  const msg = document.getElementById("uploadMsg");
 
   if (!fileInput.files.length) {
-    alert("Please select an image");
+    alert("Select image first");
     return;
   }
 
@@ -178,23 +165,22 @@ function uploadImage() {
   fetch(`${BACKEND_URL}/admin/upload-image`, {
     method: "POST",
     headers: {
-      "Authorization": localStorage.getItem("adminToken")
+      "Authorization": ADMIN_PASSWORD
     },
     body: formData
   })
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      msg.innerText = "✅ Image uploaded successfully";
-      fileInput.value = "";
+      alert("Image uploaded successfully");
       loadAdminGallery();
     } else {
       alert("Upload failed");
     }
-  })
-  .catch(() => {
-    alert("Server error while uploading image");
   });
 }
-</script>
 
+// ================= INIT =================
+loadBookings();
+loadAdminGallery();
+      </script>
