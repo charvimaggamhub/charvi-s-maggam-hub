@@ -16,48 +16,35 @@
   <img src="../logo.png" class="admin-logo">
   <h2>Admin Login</h2>
 
-  <input type="password" id="password" placeholder="Enter Admin Password">
-  <button onclick="login()">Login</button>
+<input type="password" id="adminPass" placeholder="Enter Admin Password">
+<button onclick="adminLogin()">Login</button>
 
-  <p id="msg" style="color:red;"></p>
-</div>
+<p id="loginMsg" style="color:red;"></p>
 
 <script>
 const BACKEND_URL = "https://charvis-backend.onrender.com";
 
-function login() {
-  const password = document.getElementById("password").value;
-  const msg = document.getElementById("msg");
+let ADMIN_PASSWORD = "";
 
-  if (!password) {
-    msg.innerText = "Please enter password";
-    return;
-  }
+function adminLogin() {
+  const password = document.getElementById("adminPass").value;
 
-  fetch(`${BACKEND_URL}/admin/login`, {
-    method: "POST",
+  fetch(`${BACKEND_URL}/admin/bookings`, {
     headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ password: password })
+      "Authorization": password
+    }
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // Save token for dashboard usage
-      localStorage.setItem("adminToken", data.token);
-
-      // Redirect to dashboard
-      window.location.href = "admin-dashboard.html";
+  .then(res => {
+    if (res.status === 403) {
+      document.getElementById("loginMsg").innerText = "Wrong password!";
     } else {
-      msg.innerText = "Wrong password";
+      ADMIN_PASSWORD = password;
+      sessionStorage.setItem("adminPass", password);
+      window.location.href = "admin-dashboard.html";
     }
   })
   .catch(() => {
-    msg.innerText = "Server error";
+    document.getElementById("loginMsg").innerText = "Server error";
   });
 }
 </script>
-
-</body>
-</html>
