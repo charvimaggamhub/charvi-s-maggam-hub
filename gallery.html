@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -106,12 +106,15 @@
       }
 
       images.forEach(img => {
-        const image = document.createElement("img");
-        image.src = img.url;
-        image.alt = "Maggam work";
-        gallery.appendChild(image);
-      });
-    })
+  g.innerHTML += `
+    <div style="display:inline-block;margin:10px;">
+      <img src="${img.url}" width="120"><br>
+      <button onclick="deleteImage('${img.public_id}')">
+        Delete
+      </button>
+    </div>
+  `;
+});
     .catch(() => {
       document.getElementById("loadingMsg").innerText =
         "Failed to load images. Try again later.";
