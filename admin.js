@@ -22,17 +22,26 @@ const UPLOAD_PRESET = "charvi_upload";
 // ================= LOGIN =================
 document.getElementById("loginBtn")?.addEventListener("click", function () {
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email")?.value;
+  const password = document.getElementById("password")?.value;
   const msg = document.getElementById("loginMsg");
 
+  if(!email || !password){
+      if(msg) msg.innerText = "Enter email and password";
+      return;
+  }
+
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => { if (msg) msg.innerText = ""; })
-    .catch(() => { if (msg) msg.innerText = "Login Failed ❌"; });
+    .then(() => {
+        if(msg) msg.innerText = "";
+        window.location.href = "admin-dashboard.html";
+    })
+    .catch((error) => {
+        if(msg) msg.innerText = error.message;
+        console.error(error);
+    });
 
 });
-
-
 // ================= AUTH STATE =================
 auth.onAuthStateChanged(function (user) {
 
