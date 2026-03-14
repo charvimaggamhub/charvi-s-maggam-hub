@@ -27,15 +27,30 @@
 
       <h2 class="login-title">Admin Login</h2>
 
-      <input type="text" placeholder="Username" class="login-input">
+      <!-- EMAIL -->
+      <input 
+        type="email"
+        id="email"
+        placeholder="Admin Email"
+        class="login-input"
+      >
 
+      <!-- PASSWORD -->
       <div class="password-field">
-  <input type="password" id="password" placeholder="Password" class="login-input">
-  <span class="toggle-eye" onclick="togglePassword()">👁</span>
-</div>
-      <button class="login-btn">Login</button>
+        <input 
+          type="password"
+          id="password"
+          placeholder="Password"
+          class="login-input"
+        >
+        <span class="toggle-eye" onclick="togglePassword()">👁</span>
+      </div>
 
-      <p class="error-text"></p>
+      <!-- LOGIN BUTTON -->
+      <button id="loginBtn" class="login-btn">Login</button>
+
+      <!-- ERROR MESSAGE -->
+      <p id="loginMsg" class="error-text"></p>
 
     </div>
   </div>
@@ -187,12 +202,12 @@ navigator.serviceWorker.register('service-worker.js')
 
 <script>
 function togglePassword() {
-  const passwordInput = document.getElementById("password");
+  const input = document.getElementById("password");
 
-  if (passwordInput.type === "password") {
-      passwordInput.type = "text";
+  if (input.type === "password") {
+    input.type = "text";
   } else {
-      passwordInput.type = "password";
+    input.type = "password";
   }
 }
 </script>
